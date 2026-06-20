@@ -1,0 +1,31 @@
+ARG VARIANT=ark
+
+FROM ghcr.io/archlinux/archlinux:latest
+
+ARG VARIANT
+
+# Full system update + all packages distrobox needs pre-installed
+RUN pacman -Syu --noconfirm && \
+    pacman -S --needed --noconfirm --overwrite '*' \
+        bash bash-completion bc curl diffutils findutils glibc gnupg \
+        iputils inetutils keyutils less lsof man-db man-pages mlocate \
+        mtr ncurses nss-mdns openssh pigz pinentry procps-ng \
+        rsync shadow sudo tcpdump time traceroute tree tzdata \
+        unzip util-linux util-linux-libs vte-common wget words \
+        xorg-xauth zip \
+        base-devel git nano vim \
+        mesa vulkan-icd-loader
+
+# Variant-specific packages
+RUN if echo "$VARIANT" | grep -q 'nvidia'; then \
+        pacman -S --needed --noconfirm --overwrite '*' opencl-nvidia; \
+    else \
+        pacman -S --needed --noconfirm --overwrite '*' vulkan-radeon vulkan-intel; \
+    fi
+
+# Mark distrobox setup as complete — skips package installation on first enter
+RUN touch /.containersetupdone
+
+# Clean up
+RUN pacman -Scc --noconfirm && \
+    rm -rf /tmp/* /var/tmp/*
