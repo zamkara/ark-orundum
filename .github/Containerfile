@@ -23,6 +23,9 @@ RUN if echo "$VARIANT" | grep -q 'nvidia'; then \
         pacman -S --needed --noconfirm --overwrite '*' vulkan-radeon vulkan-intel; \
     fi
 
+# Generate locales
+RUN sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen && locale-gen
+
 # Mark distrobox setup as complete — skips package installation on first enter
 RUN touch /.containersetupdone
 
