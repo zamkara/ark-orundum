@@ -1,4 +1,5 @@
-name: "Orundum — ${{ github.event_name == 'schedule' && 'Daily' || github.event_name == 'push' && 'Push' || 'Manual' }} · ${{ github.run_number }}"
+name: Build Orundum Container
+run-name: "Orundum — ${{ github.event_name == 'schedule' && 'Daily' || github.event_name == 'push' && 'Push' || 'Manual' }} · ${{ github.run_number }}"
 
 on:
   push:
